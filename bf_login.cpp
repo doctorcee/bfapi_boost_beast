@@ -41,7 +41,7 @@ int main(int argc, char** argv)
         const std::string port = "443";								// HTTPS port
         const std::string target = "/api/certlogin";				// target endpoint
         const int version = 11;										// HTTP 1.1
-                
+        
         const std::string un = "username";							// Betfair account username
         const std::string pw = "password";							// Betfair account password
         const std::string ak = "application_key";					// Betfair account API application key

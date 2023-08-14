@@ -37,16 +37,16 @@ int main(int argc, char** argv)
 {
     try
     {                
-        const std::string host = "identitysso-cert.betfair.com";	// Host
-        const std::string port = "443";								// HTTPS port
-        const std::string target = "/api/certlogin";				// target endpoint
-        const int version = 11;										// HTTP 1.1
+        const std::string host = "identitysso-cert.betfair.com";    // Host
+        const std::string port = "443";                             // HTTPS port
+        const std::string target = "/api/certlogin";                // target endpoint
+        const int version = 11;                                     // HTTP 1.1
         
-        const std::string un = "username";							// Betfair account username
-        const std::string pw = "password";							// Betfair account password
-        const std::string ak = "application_key";					// Betfair account API application key
-        const std::string cert_path = "path_to_certificate_file";	// Path to certificate file
-        const std::string key_path = "path_to_key_file";			// Path to key file                      
+        const std::string un = "username";                          // Betfair account username
+        const std::string pw = "password";                          // Betfair account password
+        const std::string ak = "application_key";                   // Betfair account API application key
+        const std::string cert_path = "path_to_certificate_file";   // Path to certificate file
+        const std::string key_path = "path_to_key_file";            // Path to key file                      
 
         // The io_context is required for all I/O
         net::io_context ioc;
@@ -82,7 +82,7 @@ int main(int argc, char** argv)
         stream.handshake(ssl::stream_base::client);   
                 
         // Create HTTP login request
-        http::request<http::string_body> req{http::verb::post, target, version};		        
+        http::request<http::string_body> req{http::verb::post, target, version};                
         req.set(http::field::host, host);        
         req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
         

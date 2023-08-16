@@ -9,10 +9,19 @@
 //
 // https://docs.developer.betfair.com/display/1smk3cen4v3lu3yomq5qye0ni/Non-Interactive+%28bot%29+login
 //
-// For this code to work you will need to replace the variables us,pw,ak with your account
-// username and password and application key respectively. You will also need to 
-// change cert_path and key_path to point to the location of your certificate and key files
-// generated according to the above Betfair documentation link.
+// For this code to work you will need an active Betfair account that has API access and you will need to 
+// have created certificate and key files as described in the above Betfair documentation.
+// 
+// User credentials will be imported from a local ini file called config.ini (which needs to be created and populated 
+// and reside in the same directory as the executable)
+// that has the following format:
+//
+// 		[General]
+// 		user=your_betfair_account_username
+// 		pw=your_betfair_account_password
+// 		ak=your_betfair_account_application_key
+// 		cert=path_to_certificate_file
+// 		key=path_to_key_file
 //
 //==============================================================================
 #include <boost/beast/core.hpp>
@@ -23,9 +32,12 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/ssl/error.hpp>
 #include <boost/asio/ssl/stream.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <fstream>
 
 namespace beast = boost::beast; 
 namespace http = beast::http;   
@@ -35,19 +47,25 @@ using tcp = net::ip::tcp;
 
 int main(int argc, char** argv)
 {
-    try
-    {                
-        const std::string host = "identitysso-cert.betfair.com";    // Host
-        const std::string port = "443";                             // HTTPS port
-        const std::string target = "/api/certlogin";                // target endpoint
-        const int version = 11;                                     // HTTP 1.1
-        
-        const std::string un = "username";                          // Betfair account username
-        const std::string pw = "password";                          // Betfair account password
-        const std::string ak = "application_key";                   // Betfair account API application key
-        const std::string cert_path = "path_to_certificate_file";   // Path to certificate file
-        const std::string key_path = "path_to_key_file";            // Path to key file                      
+	const std::string host = "identitysso-cert.betfair.com";    // Host
+	const std::string port = "443";                             // HTTPS port
+	const std::string target = "/api/certlogin";                // target endpoint
+	const int version = 11;                                     // HTTP 1.1
 
+	// Read user credentials from a local ini file named "config.ini" (see comments at head of file).
+	const std::string inifile("config.ini");
+	
+	boost::property_tree::ptree pt;	
+	boost::property_tree::ini_parser::read_ini(inifile, pt);
+	
+	const std::string un = pt.get<std::string>("General.user");
+	const std::string pw = pt.get<std::string>("General.pw");
+	const std::string ak = pt.get<std::string>("General.ak");
+	const std::string cert_path = pt.get<std::string>("General.cert");
+	const std::string key_path = pt.get<std::string>("General.key");
+	
+    try
+    {                                        
         // The io_context is required for all I/O
         net::io_context ioc;
 

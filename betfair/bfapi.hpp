@@ -25,19 +25,19 @@
 #include <string>
 
 namespace bfapi {
-	
-	struct accinfo {
-		std::string username;
-		std::string password;
-		std::string appkey;
-		std::string cert_path;
-		std::string key_path;
-	};
-	
-	bool extract_user_credentials(const std::string& filename, bfapi::accinfo& ainfo);
-	bool login(const bfapi::accinfo& user_info,
-			   std::string& session_token, 
-			   std::string& error);
-	
+    
+    struct accinfo {
+        std::string username;
+        std::string password;
+        std::string appkey;
+        std::string cert_path;
+        std::string key_path;
+    };
+    
+    bool extract_user_credentials(const std::string& filename, bfapi::accinfo& ainfo);
+    bool login(const bfapi::accinfo& user_info,
+               std::string& session_token, 
+               std::string& error);
+    
 } // end of namespace bfapi
 

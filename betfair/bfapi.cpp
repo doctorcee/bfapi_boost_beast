@@ -25,45 +25,45 @@ using tcp = net::ip::tcp;
 using boost::property_tree::ptree;
 
 namespace bfapi {
-	
+    
 //==============================================================================
 bool extract_user_credentials(const std::string& filename, 
-							  bfapi::accinfo& ainfo)
+                              bfapi::accinfo& ainfo)
 {
     if (FILE *file = fopen(filename.c_str(), "r")) 
-	{
-		fclose(file);
-		boost::property_tree::ptree pt;    
-		boost::property_tree::ini_parser::read_ini(filename, pt);
+    {
+        fclose(file);
+        boost::property_tree::ptree pt;    
+        boost::property_tree::ini_parser::read_ini(filename, pt);
     
-		ainfo.username  = pt.get<std::string>("General.user");
-		ainfo.password  = pt.get<std::string>("General.pw");
-		ainfo.appkey    = pt.get<std::string>("General.ak");
-		ainfo.cert_path = pt.get<std::string>("General.cert");
-		ainfo.key_path  = pt.get<std::string>("General.key");
-		
-		// TODO: Perhaps create a validate method of bfapi::accinfo to validate 
-		// member strings.
-		return true;
-	}	
-	return false;	
+        ainfo.username  = pt.get<std::string>("General.user");
+        ainfo.password  = pt.get<std::string>("General.pw");
+        ainfo.appkey    = pt.get<std::string>("General.ak");
+        ainfo.cert_path = pt.get<std::string>("General.cert");
+        ainfo.key_path  = pt.get<std::string>("General.key");
+        
+        // TODO: Perhaps create a validate method of bfapi::accinfo to validate 
+        // member strings.
+        return true;
+    }    
+    return false;    
 }
 
 //==============================================================================
 bool login(const bfapi::accinfo& user_info, 
-		   std::string& session_token, 
-		   std::string& error)		   
+           std::string& session_token, 
+           std::string& error)           
 {
-	bool ok = false;
-	
-	const std::string host   = "identitysso-cert.betfair.com";    // Host
+    bool ok = false;
+    
+    const std::string host   = "identitysso-cert.betfair.com";    // Host
     const std::string port   = "443";                             // HTTPS port
     const std::string target = "/api/certlogin";                  // target endpoint
     const int version        = 11;                                // HTTP 1.1
     
     // Clear reference parameters
     session_token = "";
-	error    = "";
+    error    = "";
     
     try
     {                                        
@@ -126,54 +126,54 @@ bool login(const bfapi::accinfo& user_info,
 
         // Receive the HTTP response
         http::read(stream, buffer, res);
-						
-		std::string bf_login_status = "";
-		if (res.result_int() == 200)
-		{
-			// Extract session token from a successful response (HTTP 200)			
-			// Response body is JSON of the form:
-			// {
-			//		"sessionToken":"abcdefghijklmnop",
-			//		"loginStatus":"SUCCESS" (INVALID_USERNAME_OR_PASSWORD , CERT_AUTH_REQUIRED etc. See docs for full list)
-			// }
-			
-			// parse with boost property_tree
-			ptree pt;
-			std::stringstream ss; 
-			ss << res.body();
-			read_json(ss, pt);
-			
-			int tc = pt.count("loginStatus");
-			if (tc > 0)
-			{
-				bf_login_status = pt.get<std::string>("loginStatus");
-				if (bf_login_status == "SUCCESS")
-				{
-					session_token   = pt.get<std::string>("sessionToken");
-					std::cout << "Reponse \"loginStatus\"=" << bf_login_status << std::endl;
-				}
-				else
-				{
-					error = "bfapi::login() error: Response \"loginStatus\" = " + bf_login_status;
-				}
-			}
-			else
-			{
-				error = "bfapi::login() error: Response missing \"loginStatus\" field!";
-			}
-		}
-		else
-		{			
-			// NOTE: must use explicit std::string constructor because res.reason() is actually a boost::string_view)		
-			error = "bfapi::login() error: HTTPS response error " + std::to_string(res.result_int()) + " " + std::string(res.reason());
-			std::cout << error << std::endl;			
-			for (auto& h : res.base()) 
-			{
-				std::cout << "Field: " << h.name() << "/text: " << h.name_string() << ", Value: " << h.value() << "\n";
-			}
-			std::cout << res.body() << std::endl;
-		}		
-				
+                        
+        std::string bf_login_status = "";
+        if (res.result_int() == 200)
+        {
+            // Extract session token from a successful response (HTTP 200)            
+            // Response body is JSON of the form:
+            // {
+            //        "sessionToken":"abcdefghijklmnop",
+            //        "loginStatus":"SUCCESS" (INVALID_USERNAME_OR_PASSWORD , CERT_AUTH_REQUIRED etc. See docs for full list)
+            // }
+            
+            // parse with boost property_tree
+            ptree pt;
+            std::stringstream ss; 
+            ss << res.body();
+            read_json(ss, pt);
+            
+            int tc = pt.count("loginStatus");
+            if (tc > 0)
+            {
+                bf_login_status = pt.get<std::string>("loginStatus");
+                if (bf_login_status == "SUCCESS")
+                {
+                    session_token   = pt.get<std::string>("sessionToken");
+                    std::cout << "Reponse \"loginStatus\"=" << bf_login_status << std::endl;
+                }
+                else
+                {
+                    error = "bfapi::login() error: Response \"loginStatus\" = " + bf_login_status;
+                }
+            }
+            else
+            {
+                error = "bfapi::login() error: Response missing \"loginStatus\" field!";
+            }
+        }
+        else
+        {            
+            // NOTE: must use explicit std::string constructor because res.reason() is actually a boost::string_view)        
+            error = "bfapi::login() error: HTTPS response error " + std::to_string(res.result_int()) + " " + std::string(res.reason());
+            std::cout << error << std::endl;            
+            for (auto& h : res.base()) 
+            {
+                std::cout << "Field: " << h.name() << "/text: " << h.name_string() << ", Value: " << h.value() << "\n";
+            }
+            std::cout << res.body() << std::endl;
+        }        
+                
         // Gracefully close the stream
         beast::error_code ec;
         stream.shutdown(ec);
@@ -194,10 +194,10 @@ bool login(const bfapi::accinfo& user_info,
     }
     catch(std::exception const& e)
     {
-		error = std::string("bfapi::login() exception occurred: ") + std::string(e.what());
+        error = std::string("bfapi::login() exception occurred: ") + std::string(e.what());
         ok = false;
     }
-	return ok;
-}				   
-	
+    return ok;
+}                   
+    
 }  // end of namespace bfapi

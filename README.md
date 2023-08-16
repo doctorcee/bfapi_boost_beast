@@ -17,11 +17,16 @@ information and before making use of the project.
 
 ## Build instructions
 
-To build the login example on Linux using g++:
+To build the login example in main.cpp on Linux using g++:
 
 ```bash
-$ g++ bf_login.cpp -o test_bf_login.out -lpthread -lcrypto -lssl
+$ g++ main.cpp betfair/bfapi.cpp -o test_login.out -lpthread -lcrypto -lssl
 ```
+
+## Running the example
+
+Create a config file containing used credentials (according to the instructions in betfair/bfapi.hpp) and pass the path as a command line parameter to 
+the executable built above. This should login to your account and return a session token which can then be used to perform other API operations.
 
 
 

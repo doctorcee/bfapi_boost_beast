@@ -96,8 +96,9 @@ int main(int argc, char** argv)
         ctx.use_certificate_file(cert_path, boost::asio::ssl::context::pem);
         ctx.use_rsa_private_key_file(key_path, boost::asio::ssl::context::pem);
 
-        // Don't verify server certificate. Probably need to check this 
-        ctx.set_verify_mode(ssl::verify_none);
+        // Verify server certificate 
+        ctx.set_verify_mode(ssl::verify_peer);                
+        ctx.set_default_verify_paths();
 
         // These objects perform our I/O
         tcp::resolver resolver(ioc);

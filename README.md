@@ -1,7 +1,8 @@
 
 ## Betfair API interaction using C++ and boost beast libraries
 
-This project will ultimately provide simple examples of how to interact with the Betfair API using C++ and boost/beast libraries.
+This project provides some simple examples of how to communicate with the Betfair API using C++ and boost/beast libraries. 
+It is intended ONLY to assist with getting started with C++ for Betfair API interaction and help with creating bespoke applications.
 
 ## Requirements
 * An active Betfair account with access to the Betfair API
@@ -20,7 +21,7 @@ information and before making use of the project.
 To build the login example in main.cpp on Linux using g++:
 
 ```bash
-$ g++ main.cpp betfair/bfapi.cpp -o test_login.out -lpthread -lcrypto -lssl
+$ g++ examples/bf_login.cpp betfair/bfapi.cpp -o test_login.out -lpthread -lcrypto -lssl
 ```
 
 ## Running the example

@@ -22,9 +22,21 @@
 //
 // The path to this file must be supplied to some methods in this API
 //==============================================================================
+#ifndef BFAPI_HPP
+#define BFAPI_HPP
+
 #include <string>
+#include <vector>
+#include "orders.hpp"
 
 namespace bfapi {
+    
+    const std::string bf_host = "api.betfair.com";                                         // Host          
+    const std::string place_orders_endpoint = "/exchange/betting/rest/v1.0/placeOrders/";  // endpoint for placeOrders
+    
+    
+    const std::string port = "443";   // HTTPS port    
+    const int http_version = 11;      // HTTP 1.1
     
     struct accinfo {
         std::string username;
@@ -34,10 +46,18 @@ namespace bfapi {
         std::string key_path;
     };
     
+    
     bool extract_user_credentials(const std::string& filename, bfapi::accinfo& ainfo);
     bool login(const bfapi::accinfo& user_info,
                std::string& session_token, 
-               std::string& error);
+               std::string& error);                  
+                                           
+    bool placeOrders(const bfapi::accinfo& user_info,
+                     const std::string& session_token,
+                     std::string& bf_status,
+                     std::string& error,
+                     const bfapi::orders::place_limit_orders_request& request);
     
 } // end of namespace bfapi
 
+#endif

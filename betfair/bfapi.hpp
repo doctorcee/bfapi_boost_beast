@@ -31,8 +31,9 @@
 
 namespace bfapi {
     
-    const std::string bf_host = "api.betfair.com";                                         // Host          
-    const std::string place_orders_endpoint = "/exchange/betting/rest/v1.0/placeOrders/";  // endpoint for placeOrders
+    const std::string bf_host = "api.betfair.com";                                                     // Host          
+    const std::string place_orders_endpoint = "/exchange/betting/rest/v1.0/placeOrders/";              // endpoint for placeOrders
+    const std::string list_event_types_endpoint = "/exchange/betting/rest/v1.0/listEventTypes/";       // endpoint for listEventTypes
     
     
     const std::string port = "443";   // HTTPS port    

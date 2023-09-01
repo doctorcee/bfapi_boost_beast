@@ -10,8 +10,8 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/ssl/error.hpp>
 #include <boost/asio/ssl/stream.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/ini_parser.hpp>
+#include <boost/version.hpp>
+#include <iostream>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -26,8 +26,18 @@ namespace net = boost::asio;
 namespace ssl = net::ssl;       
 using tcp = net::ip::tcp;      
 
+
 int main(int argc, char** argv)
 {   
+	// Print boost version
+	std::cout << "Boost version: " 
+          << BOOST_VERSION / 100000
+          << "."
+          << BOOST_VERSION / 100 % 1000
+          << "."
+          << BOOST_VERSION % 100 
+          << std::endl;   
+    // TODO: remove the above 
     if (argc != 2)
     {
         std::cerr << "Invalid parameters (must supply path to config file)" << std::endl;
@@ -117,17 +127,22 @@ int main(int argc, char** argv)
         beast::flat_buffer buffer;
 
         // Declare a container to hold the response
-        http::response<http::string_body> res;
+        http::response<http::string_body> res;               
 
         // Receive the HTTP response
-        http::read(stream, buffer, res);        
+        http::read(stream, buffer, res);      
+        
+        if (res.result_int() != 200)
+        {
+            std::cout << "HTTP ERROR status " << res.result() << " code " << std::to_string(res.result_int()) << std::endl;                           
+        }  
         
         // Dump JSON respons to console
         std::cout << res.body() << std::endl;
         
         auto t2 = high_resolution_clock::now();        
 
-        /* Getting number of milliseconds as a double. */
+        // Get number of milliseconds as a double
         duration<double, std::milli> ms_double = t2 - t1;    
         
         std::cout << "listEventTypes operation took " << ms_double.count() << "ms\n";
